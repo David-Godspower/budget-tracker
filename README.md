@@ -1,5 +1,5 @@
 # Budget Tracker
-A simple **Budget Tracker Web App** built with **HTML, CSS, and JavaScript**.
+Curious about my incomes and expenses, I decided to build this simple **Budget Tracker Web App**.  
 
 ## Features
 - Add and edit **income**
@@ -8,9 +8,18 @@ A simple **Budget Tracker Web App** built with **HTML, CSS, and JavaScript**.
 - View **balance** in real time
 - Track spending habits
 
+## Tech Stack
+- HTML
+- CSS
+- JavaScript
+  
 ## Installation
 1. Clone the repository
 2. Open 'index.html' in your browser
+
+## Live Preview
+[Click here to view the Budget Tracker](https://david-godspower.github.io/budget-tracker/)
+
 
 ## Caegories Example
 - Transport 
@@ -23,5 +32,9 @@ A simple **Budget Tracker Web App** built with **HTML, CSS, and JavaScript**.
 - Rent 
 - Entertainment 
 - Others
+
+## Contribution
+Open to corrections and Improvements
+
 
 
