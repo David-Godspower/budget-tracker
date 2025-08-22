@@ -61,3 +61,34 @@ thead {
  }
  h3,.income,#reset{color:red; font-size:45px;}
  .expenses{color:#500; font-size:45px}.balance{color:#000; font-size:40px;}
+
+    .edit-btn, .delete-btn {
+        background-color: #ff153f;
+        color: white;
+        border: none;
+        padding: 5px 10px;
+        margin: 0 2px;
+        border-radius: 3px;
+        cursor: pointer;
+     }
+    .edit-btn:hover, .delete-btn:hover {
+            background-color: #ff0000;
+    }
+    a{
+        text-decoration: none;
+        color:yellow;
+    }
+ footer{
+    background-color: #ff153f;
+    margin-top:20px;
+    font-size:30px;
+    padding:10px;
+    text-align: center;
+    font-weight: bold;
+    color:white;
+    position: relative;
+    bottom: 0;
+    width: 100%;
+    height: auto;
+    
+ }
