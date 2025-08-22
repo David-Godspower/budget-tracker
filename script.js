@@ -39,7 +39,7 @@ incomeForm.addEventListener('submit', e => {
   const amount = parseFloat(document.getElementById('income-amount').value);
   if (!source || isNaN(amount)) return;
 
-  const entry = { source, amount, date: new Date().toLocaleDateString() };
+  const entry = { source, amount, date: getFormattedDate() };
 
   if (editIncomeIndex !== null) {
     // update existing
