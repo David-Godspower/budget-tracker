@@ -4,6 +4,9 @@ body{
     padding:2px;
     text-align:center;
 }
+main{
+    flex: 1;
+}
 h1{
     font-size:65px;
     color: #ff153f ;
@@ -74,6 +77,10 @@ thead {
     .edit-btn:hover, .delete-btn:hover {
             background-color: #ff0000;
     }
+
+    a:hover{
+        color:orange;
+    }
     a{
         text-decoration: none;
         color:yellow;
@@ -87,8 +94,9 @@ thead {
     font-weight: bold;
     color:white;
     position: relative;
+    left: 0;
     bottom: 0;
     width: 100%;
     height: auto;
-    
+
  }
