@@ -183,3 +183,6 @@ function updateSummary() {
       localStorage.removeItem("expenses");
       location.reload();
     }
+
+    // Display current year in footer
+    document.getElementById("year").textContent = new Date().getFullYear();
