@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>Budget Tracker</title>
+        <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <h1>Budget Tracker</h1>
+    <h1>A Simple Web App to Track your Incomes and Expenses.</h1>
+    <!-- Income Section -->
+      <!-- Income Form -->
+  <form id="income-form">
+    <h3>Add Income</h3>
+    <label for="income-source">Income Source:</label>
+    <input type="text" id="income-source" placeholder="Income Source" pattern="[A-Za-z\s]+" title="Letters only"required><br>
+     <label for="income-amount">Amount:</label>
+    <input type="number" id="income-amount" placeholder="Amount (₦)" required><br>
+    <button type="submit">Add Income</button>
+  </form>
+
+    <form id="expense-form">
+    <label for="add new expenses">Add New Expenses</label><br>
+    <label for="title">Title:</label>
+    <input type="text" id="expense-title" pattern="[A-Za-z\s]+" title="Letters only"required><br>
+    <label for="amount">Amount:</label>
+    <input type="number" id="expense-amount" required><br>
+    <label for="category">Category:</label>
+    <select id="expense-category">
+        <option>Transport</option>
+         <option>Food</option>
+          <option>Data</option> 
+          <option>Books</option>
+          <option>Tithe</option>
+          <option>Groceries</option>
+          <option>Savings</option>
+          <option>Rent</option>
+          <option>Entertainment</option>
+          <option>Others</option>
+    </select>
+    <button>Add Expenses</button>
+    </form>
+    <!-- Income Table -->
+  <h3><strong>Income History</strong></h3>
+  <table>
+    <thead><tr><th>Source</th><th>Amount</th><th>Date</th><th>Actions</th></tr></thead>
+    <tbody id="income-table-body"></tbody>
+  </table>
+    <h3><strong>Expenses History</strong></h3>
+    <table border="1" cellpadding="5">
+        <thead>
+            <th>Title</th>
+            <th>Amount</th>
+            <th>Category</th>
+            <th>Date</th>
+            <th>Action</th>
+        </thead>
+        <tbody id="expense-table-body"></tbody>
+    </table>
+    <div class="summary">
+    <h3>Summary</h3>
+    <p class="income" >Total Income: ₦ </p>
+    <p class="expenses">Total Expenses: ₦</p>
+    <p class="balance" ><strong>Remaining Balance: ₦</strong></p>
+    </div>
+    <button id="reset"onclick="resetBudget()">Reset All</button>
+    <script src="script.js"></script>
+</body>   
+</html>
