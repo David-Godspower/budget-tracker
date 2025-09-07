@@ -11,7 +11,7 @@
 </head>
 <body>
     <h1>Budget Tracker</h1>
-    <h1>A Simple Web App to Track your Incomes and Expenses.</h1>
+    <h2>A Simple Web App to Track your Incomes and Expenses.</h2>
      <!-- Dark Mode Toggle Top Right -->
      <div class="dark-toggle-container">
       <label for="dark-mode-toggle" style="margin:0;cursor:pointer;">🌙 Dark Mode
@@ -66,7 +66,7 @@
     </form>
     <!-- Income Table -->
   <h3><strong>Expenses History</strong></h3>
-    <table border="1d" cellpadding="5">
+    <table border="1" cellpadding="5">
         <thead>
             <th>Title</th>
             <th>Amount</th>
@@ -85,10 +85,8 @@
     </div>
     <!-- Data Import/Export Controls -->
     <div style="margin: 1em 0;">
-      <button id="export-btn">Export Data</button>
-      <input type="file" id="import-file" accept="application/json">
       <button id="reset-btn">Reset Budget</button>
-      <button id="export-pdf-btn">Export PDF</button>
+      <button id="export-pdf-btn">Generate Statement PDF</button>
     </div>
 
    
