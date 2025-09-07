@@ -30,10 +30,14 @@ h3, .summary h3, #filter-section label, #category-management h3 {
 }
 
 /* Buttons */
-button, #filter-btn, #export-btn, #reset-btn, #export-pdf-btn, #add-category-btn, #search-btn {
+button, #filter-btn, #reset-btn, #export-pdf-btn, #add-category-btn, #search-btn {
     background: #2563eb;
     color: #fff;
     font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 14px;
+
     border: none;
     border-radius: 5px;
     padding: 10px 20px;
@@ -278,11 +282,15 @@ footer p{
 
 /* --- Data Controls --- */
 [data-controls],
-#export-btn, #reset-btn, #export-pdf-btn {
+ #reset-btn, #export-pdf-btn {
     margin: 8px 4px;
     padding: 10px 18px;
     border-radius: 5px;
     background: #ffb5aa;
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    text-align: center;
     color: #500;
     font-weight: bold;
     border: none;
