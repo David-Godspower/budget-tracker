@@ -4,25 +4,49 @@
         <meta charset="UTF-8">
         <title>Budget Tracker</title>
         <link rel="stylesheet" href="styles.css">
+        <!-- Font Awesome -->
+         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <h1>Budget Tracker</h1>
     <h1>A Simple Web App to Track your Incomes and Expenses.</h1>
+     <!-- Dark Mode Toggle Top Right -->
+     <div class="dark-toggle-container">
+      <label for="dark-mode-toggle" style="margin:0;cursor:pointer;">🌙 Dark Mode
+        <input type="checkbox" id="dark-mode-toggle">
+      </label>
+    </div>
+
     <!-- Income Section -->
+    <section id="income-section" style="margin: 2em 0; max-width: 700px; background: #f9fafb; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 20px;">
+      <h2 style="color:#22c55e;">Income</h2>
       <!-- Income Form -->
   <form id="income-form">
-    <h3>Add Income</h3>
+    <h3>Add Income</h3><br>
     <label for="income-source">Income Source:</label>
-    <input type="text" id="income-source" placeholder="Income Source" pattern="[A-Za-z\s]+" title="Letters only"required><br>
+    <input type="text" id="income-source" placeholder="Income Source" pattern="[A-Za-z\s]+" title="Letters only" required><br>
      <label for="income-amount">Amount:</label>
     <input type="number" id="income-amount" placeholder="Amount (₦)" required><br>
     <button type="submit">Add Income</button>
   </form>
 
-    <form id="expense-form">
-    <label for="add new expenses">Add New Expenses</label><br>
+    <!-- Income Table -->
+  <h3><strong>Income History</strong></h3>
+  <table>
+    <thead><tr><th>Source</th><th>Amount</th><th>Date</th><th>Actions</th></tr></thead>
+    <tbody id="income-table-body"></tbody>
+  </table>
+    </section>
+
+    <!-- Expenses Section -->
+    <section id="expenses-section" style="margin: 2em 0; max-width: 700px; background: #f9fafb; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 20px;">
+  <h2 style="color:#ef4444;">Expenses</h2>
+  <form id="expense-form">
+    <h3>Add Expenses</h3><br>
     <label for="title">Title:</label>
-    <input type="text" id="expense-title" pattern="[A-Za-z\s]+" title="Letters only"required><br>
+    <input type="text" id="expense-title" pattern="[A-Za-z\s]+" title="Letters only" required><br>
     <label for="amount">Amount:</label>
     <input type="number" id="expense-amount" required><br>
     <label for="category">Category:</label>
@@ -41,32 +65,90 @@
     <button>Add Expenses</button>
     </form>
     <!-- Income Table -->
-  <h3><strong>Income History</strong></h3>
-  <table>
-    <thead><tr><th>Source</th><th>Amount</th><th>Date</th><th>Actions</th></tr></thead>
-    <tbody id="income-table-body"></tbody>
-  </table>
-    <h3><strong>Expenses History</strong></h3>
-    <table border="1" cellpadding="5">
+  <h3><strong>Expenses History</strong></h3>
+    <table border="1d" cellpadding="5">
         <thead>
             <th>Title</th>
             <th>Amount</th>
             <th>Category</th>
             <th>Date</th>
-            <th>Action</th>
+            <th>Actions</th>
         </thead>
         <tbody id="expense-table-body"></tbody>
     </table>
+    </section>
     <div class="summary">
     <h3>Summary</h3>
     <p class="income" >Total Income: ₦ </p>
     <p class="expenses">Total Expenses: ₦</p>
     <p class="balance" ><strong>Remaining Balance: ₦</strong></p>
     </div>
-    <button id="reset"onclick="resetBudget()">Reset All</button>
+    <!-- Data Import/Export Controls -->
+    <div style="margin: 1em 0;">
+      <button id="export-btn">Export Data</button>
+      <input type="file" id="import-file" accept="application/json">
+      <button id="reset-btn">Reset Budget</button>
+      <button id="export-pdf-btn">Export PDF</button>
+    </div>
+
+   
+
+    <!-- Charts Section -->
+    <div id="charts" style="margin:2em 0; max-width:600px;">
+      <!-- Chart canvases will be injected by JS -->
+    </div>
+
+    <!-- Filter Section -->
+    <div id="filter-section" style="margin: 1em 0;">
+      <label for="filter-year">Year:</label>
+      <select id="filter-year"></select>
+      <label for="filter-month">Month:</label>
+      <select id="filter-month">
+        <option value="all">All</option>
+        <option value="01">January</option>
+        <option value="02">February</option>
+        <option value="03">March</option>
+        <option value="04">April</option>
+        <option value="05">May</option>
+        <option value="06">June</option>
+        <option value="07">July</option>
+        <option value="08">August</option>
+        <option value="09">September</option>
+        <option value="10">October</option> 
+        <option value="11">November</option>
+        <option value="12">December</option>
+      </select>
+      <button id="filter-btn">Apply Filter</button>
+    </div>
+
+    <!-- Category Management Section -->
+    <div id="category-management" style="margin: 1em 0; max-width:600px; background:#fffbe6; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.07); padding:18px 20px;">
+      <h3 style="color:#ff153f;">Manage Categories</h3>
+      <input type="text" id="new-category" placeholder="Add new category" style="padding:8px 12px; border-radius:5px; border:1px solid #ffb5aa;">
+      <button id="add-category-btn" style="background:#ff153f; color:#fff; font-weight:bold; border:none; border-radius:5px; padding:10px 18px; margin-left:10px; cursor:pointer;">Add</button>
+      <ul id="category-list" style="list-style:none; padding:0; margin-top:10px;"></ul>
+    </div>
+
+    <!-- Search Bar -->
+    <div id="search-section" style="margin: 1em 0; max-width:600px;">
+      <input type="text" id="search-bar" placeholder="Search transactions..." style="width:80%; padding:10px; border-radius:5px; border:1px solid #ffb5aa;">
+      <button id="search-btn" style="background:#ff153f; color:#fff; font-weight:bold; border:none; border-radius:5px; padding:10px 18px; margin-left:10px; cursor:pointer;">Search</button>
+    </div>
     
-    <footer><p>Developed by <a href="https://web.facebook.com/facebook.comDavidGodpowerAjalaDGA/" target="_blank"> David Godspower Ajala, D.G.A.</a> &copy <span id="year"></span></p>
+    <!-- Monthly Summary Section -->
+<div id="monthly-summary" style="margin: 2em auto; max-width: 700px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 20px 28px;">
+  <h2 style="color:#2563eb;">Monthly Summary</h2>
+  <div id="monthly-summary-content"></div>
+</div>
+<footer>
+        <p>David Godspower Ajala (D.G.A.) &copy <span id="year"></span></p><br>
+            <!--<a href="https://github.com/david-godspower" target="_blank"><i class="fab fa-github icons" id="github"></i></a>-->
+            <a href="https://www.linkedin.com/in/david-ajala-a93b862a1/" target="_blank"><i class="fab fa-linkedin icons" id="linkedin"></i></a>
+            <a href="mailto:ajaladavid11@gmail.com" target="_blank"><i class="fas fa-envelope icons" id="gmail"></i></a>
+            <a href="https://web.facebook.com/facebook.comDavidGodpowerAjalaDGA/" target="_blank"><i class="fab fa-facebook icons" id="facebook"></i></a>
+            <a href="https://x.com/ajala28981" target="_blank"><i class="fab fa-x-twitter icons" id="x"></i></a>
     </footer>
+
     <script src="script.js"></script>
 </body>   
 </html>
