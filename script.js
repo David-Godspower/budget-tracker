@@ -1,14 +1,19 @@
 /* ─── Persistent state ─── */
-// Helper to get formatted date as DD/MM/YYYY HH:MM
+// Helper to get formatted date as DD/MM/YYYY HH:MM AM/PM
 function getFormattedDate() {
   const now = new Date();
   const day = String(now.getDate()).padStart(2, '0');
   const month = String(now.getMonth() + 1).padStart(2, '0');
   const year = now.getFullYear();
-  const hours = String(now.getHours()).padStart(2, '0');
+  let hours = now.getHours();
   const minutes = String(now.getMinutes()).padStart(2, '0');
-  return `${day}/${month}/${year} ${hours}:${minutes}`;
+  const ampm = hours >= 12 ? 'PM' : 'AM';
+  let hour12 = hours % 12;
+  if (hour12 === 0) hour12 = 12;
+  const hourStr = String(hour12).padStart(2, '0');
+  return `${day}/${month}/${year} ${hourStr}:${minutes} ${ampm}`;
 }
+
 const incomeForm = document.getElementById('income-form');
 const expenseForm = document.getElementById('expense-form');
 let incomes  = JSON.parse(localStorage.getItem('incomes'))  || [];
@@ -17,156 +22,20 @@ let expenses = JSON.parse(localStorage.getItem('expenses')) || [];
 let editIncomeIndex  = null;
 let editExpenseIndex = null;
 
+/* === Core save (also refresh charts) === */
 function saveData() {
-  localStorage.setItem('incomes',  JSON.stringify(incomes));
+  localStorage.setItem('incomes', JSON.stringify(incomes));
   localStorage.setItem('expenses', JSON.stringify(expenses));
+  // keep charts in sync
+  try { renderCharts(); } catch (e) { /* ignore if charts not ready yet */ }
 }
-
-incomeForm.addEventListener('submit', e => {
-  e.preventDefault();
-  const source = document.getElementById('income-source').value.trim();
-  const amount = parseFloat(document.getElementById('income-amount').value);
-  if (!source || isNaN(amount)) return;
-  const entry = { source, amount, date: getFormattedDate() };
-  if (editIncomeIndex !== null) {
-    incomes[editIncomeIndex] = entry;
-    editIncomeIndex = null;
-    incomeForm.querySelector('button').textContent = 'Add Income';
-  } else {
-    incomes.push(entry);
-  }
-  saveData();
-  renderIncomes();
-  updateSummary();
-  incomeForm.reset();
-});
-
-expenseForm.addEventListener('submit', e => {
-  e.preventDefault();
-  const title = document.getElementById('expense-title').value.trim();
-  const amount = parseFloat(document.getElementById('expense-amount').value);
-  const category = document.getElementById('expense-category').value;
-  if (!title || isNaN(amount)) return;
-  const entry = { title, amount, category, date: getFormattedDate() };
-  if (editExpenseIndex !== null) {
-    expenses[editExpenseIndex] = entry;
-    editExpenseIndex = null;
-    expenseForm.querySelector('button').textContent = 'Add Expense';
-  } else {
-    expenses.push(entry);
-  }
-  saveData();
-  renderExpenses();
-  updateSummary();
-  expenseForm.reset();
-});
-
-function renderIncomes() {
-  const tbody = document.getElementById('income-table-body');
-  if (!tbody) return;
-  tbody.innerHTML = '';
-  incomes.forEach((inc, i) => {
-    const row = tbody.insertRow();
-    row.innerHTML = `
-      <td>${inc.source}</td>
-      <td>₦${inc.amount.toFixed(2)}</td>
-      <td>${inc.date}</td>
-      <td>
-        <button class="edit-btn">Edit</button>
-        <button class="delete-btn">Delete</button>
-      </td>`;
-    row.querySelector('.edit-btn').onclick = () => beginEditIncome(i);
-    row.querySelector('.delete-btn').onclick = () => deleteIncome(i);
-  });
-}
-function beginEditIncome(i) {
-  const inc = incomes[i];
-  document.getElementById('income-source').value = inc.source;
-  document.getElementById('income-amount').value = inc.amount;
-  incomeForm.querySelector('button').textContent = 'Update Income';
-  editIncomeIndex = i;
-}
-function deleteIncome(i) {
-  if (!confirm('Delete this income entry?')) return;
-  incomes.splice(i, 1);
-  saveData();
-  renderIncomes();
-  updateSummary();
-}
-
-function renderExpenses() {
-  const tbody = document.getElementById('expense-table-body');
-  if (!tbody) return;
-  tbody.innerHTML = '';
-  expenses.forEach((ex, i) => {
-    const row = tbody.insertRow();
-    row.innerHTML = `
-      <td>${ex.title}</td>
-      <td>₦${ex.amount.toFixed(2)}</td>
-      <td>${ex.category}</td>
-      <td>${ex.date}</td>
-      <td>
-        <button class="edit-btn">Edit</button>
-        <button class="delete-btn">Delete</button>
-      </td>`;
-    row.querySelector('.edit-btn').onclick = () => beginEditExpense(i);
-    row.querySelector('.delete-btn').onclick = () => deleteExpense(i);
-  });
-}
-function beginEditExpense(i) {
-  const ex = expenses[i];
-  document.getElementById('expense-title').value = ex.title;
-  document.getElementById('expense-amount').value = ex.amount;
-  document.getElementById('expense-category').value = ex.category;
-  expenseForm.querySelector('button').textContent = 'Update Expense';
-  editExpenseIndex = i;
-}
-function deleteExpense(i) {
-  if (!confirm('Delete this expense entry?')) return;
-  expenses.splice(i, 1);
-  saveData();
-  renderExpenses();
-  updateSummary();
-}
-
-function updateSummary() {
-  const totalIncome  = incomes.reduce((s, i) => s + i.amount, 0);
-  const totalExpense = expenses.reduce((s, e) => s + e.amount, 0);
-  const balance      = totalIncome - totalExpense;
-  document.querySelector('.income').textContent = `Total Income: ₦${totalIncome.toFixed(2)}`;
-  document.querySelector('.expenses').textContent = `Total Expenses: ₦${totalExpense.toFixed(2)}`;
-  document.querySelector('.balance').textContent = `Remaining Balance: ₦${balance.toFixed(2)}`;
-}
-
-renderIncomes();
-renderExpenses();
-updateSummary();
-populateYearDropdown();
-
-
-function groupByMonth(items) {
-  // Groups items by month/year string (MM/YYYY)
-  const grouped = {};
-  items.forEach(item => {
-    if (!item.date) return;
-    const datePart = item.date.split(' ')[0]; // "07/09/2025"
-    const [day, month, year] = datePart.split('/');
-    const monthYear = month + '/' + year;
-    if (!grouped[monthYear]) grouped[monthYear] = [];
-    grouped[monthYear].push(item);
-  });
-  return grouped;
-}
-
 
 /* ──────────────────────────────────────────────────────────
    INCOME: add / edit / delete
    ──────────────────────────────────────────────────────────*/
-// ...existing code...
-// Restore flat array logic for incomes
 incomeForm.addEventListener('submit', e => {
   e.preventDefault();
-  const source = document.getElementById('income-source').value.trim();
+  const source = document.getElementById('income-source').value.toUpperCase().trim();
   const amount = parseFloat(document.getElementById('income-amount').value);
   if (!source || isNaN(amount)) return;
   const entry = { source, amount, date: getFormattedDate() };
@@ -218,16 +87,12 @@ function deleteIncome(i) {
   updateSummary();
 }
 
-
-
 /* ──────────────────────────────────────────────────────────
    EXPENSE: add / edit / delete
    ──────────────────────────────────────────────────────────*/
-// ...existing code...
-// Restore flat array logic for expenses
 expenseForm.addEventListener('submit', e => {
   e.preventDefault();
-  const title = document.getElementById('expense-title').value.trim();
+  const title = document.getElementById('expense-title').value.toUpperCase().trim();
   const amount = parseFloat(document.getElementById('expense-amount').value);
   const category = document.getElementById('expense-category').value;
   if (!title || isNaN(amount)) return;
@@ -285,11 +150,6 @@ function deleteExpense(i) {
 /* ──────────────────────────────────────────────────────────
    Helpers
    ──────────────────────────────────────────────────────────*/
-function saveData() {
-  localStorage.setItem('incomes', JSON.stringify(incomes));
-  localStorage.setItem('expenses', JSON.stringify(expenses));
-}
-
 function updateSummary() {
   const totalIncome  = incomes.reduce((s, i) => s + i.amount, 0);
   const totalExpense = expenses.reduce((s, e) => s + e.amount, 0);
@@ -299,110 +159,85 @@ function updateSummary() {
   document.querySelector('.balance').textContent = `Remaining Balance: ₦${balance.toFixed(2)}`;
 }
 
- /* === Reset everything === */
-    function resetBudget(){
-      if(!confirm("Clear ALL data?")) return;
-      localStorage.removeItem("incomes");
-      localStorage.removeItem("expenses");
-      location.reload();
-    }
-
-    // Display current year in footer
-    document.getElementById("year").textContent = new Date().getFullYear();
-
-/* === Export data as JSON === */
-function exportData() {
-  const data = { incomes: incomesByMonth, expenses: expensesByMonth };
-  const blob = new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'budget_data.json';
-  a.click();
-  URL.revokeObjectURL(url);
+/* === Reset everything === */
+function resetBudget(){
+  if(!confirm("Clear ALL data?")) return;
+  localStorage.removeItem("incomes");
+  localStorage.removeItem("expenses");
+  location.reload();
 }
-
-/* === Import data from JSON === */
-function importData(event) {
-  const file = event.target.files[0];
-  if (!file) return;
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    const contents = e.target.result;
-    try {
-      const data = JSON.parse(contents);
-      // Validate and set the imported data
-      if (Array.isArray(data.incomes) && Array.isArray(data.expenses)) {
-        incomes = data.incomes;
-        expenses = data.expenses;
-        saveData();
-        renderIncomes();
-        renderExpenses();
-        updateSummary();
-      } else {
-        alert('Invalid data format.');
-      }
-    } catch (error) {
-      alert('Error reading file.');
-    }
-  };
-  reader.readAsText(file);
-}
-
-document.getElementById('import-file').addEventListener('change', importData);
-document.getElementById('export-btn').addEventListener('click', exportData);
 document.getElementById('reset-btn').addEventListener('click', resetBudget);
 
 /* === Dark mode toggle === */
 const toggle = document.getElementById('dark-mode-toggle');
-toggle.addEventListener('change', () => {
-  document.body.classList.toggle('dark-mode', toggle.checked);
-  localStorage.setItem('darkMode', toggle.checked);
-});
+if (toggle) {
+  toggle.addEventListener('change', () => {
+    document.body.classList.toggle('dark-mode', toggle.checked);
+    localStorage.setItem('darkMode', toggle.checked);
+  });
+}
 
-// On page load, set the toggle based on saved preference
-window.addEventListener('load', () => {
-  // Clear old grouped-by-month data if present
-  if (localStorage.getItem('incomesByMonth') || localStorage.getItem('expensesByMonth')) {
-    localStorage.removeItem('incomesByMonth');
-    localStorage.removeItem('expensesByMonth');
-    localStorage.removeItem('incomes');
-    localStorage.removeItem('expenses');
-    location.reload();
-    return;
-  }
-  const darkMode = JSON.parse(localStorage.getItem('darkMode'));
-  if (darkMode) {
-    document.body.classList.add('dark-mode');
-    toggle.checked = true;
-  }
-});
+/* === Date grouping helper === */
+function groupByMonth(items) {
+  const grouped = {};
+  items.forEach(item => {
+    if (!item.date) return;
+    const datePart = item.date.split(' ')[0]; // "DD/MM/YYYY"
+    const [day, month, year] = datePart.split('/');
+    const monthYear = month + '/' + year;
+    if (!grouped[monthYear]) grouped[monthYear] = [];
+    grouped[monthYear].push(item);
+  });
+  return grouped;
+}
 
 /* === Chart.js for visualizations === */
+// Function to generate random color
+function getRandomColor() {
+  const letters = '0123456789ABCDEF';
+  let color = '#';
+  for (let i = 0; i < 6; i++) {
+    color += letters[Math.floor(Math.random() * 16)];
+  }
+  return color;
+}
 function renderCharts(filteredIncomes = incomes, filteredExpenses = expenses) {
-  // Clear existing canvases if any
-  document.getElementById('charts').innerHTML = `
+  // If Chart.js not loaded yet, skip gracefully
+  if (typeof Chart === 'undefined') return;
+
+  const chartsEl = document.getElementById('charts');
+  if (!chartsEl) return;
+
+  chartsEl.innerHTML = `
     <canvas id="income-chart" width="600" height="300" style="width:100%;max-width:600px;"></canvas>
     <canvas id="expense-chart" width="600" height="300" style="width:100%;max-width:600px;"></canvas>
     <canvas id="category-chart" width="600" height="300" style="width:100%;max-width:600px;"></canvas>
   `;
-  
-  // Income over time (monthly) line chart
-  const incomeCtx = document.getElementById('income-chart').getContext('2d');
+
+  // ✅ First, group the data
   const groupedIncomes = groupByMonth(filteredIncomes);
-  const incomeLabels = Object.keys(groupedIncomes).sort((a,b) => {
-    const [m1,y1] = a.split('/').map(Number);
-    const [m2,y2] = b.split('/').map(Number);
+  const groupedExpenses = groupByMonth(filteredExpenses);
+
+  // ✅ Collect all months that appear in incomes or expenses
+  const allMonths = Array.from(new Set([
+    ...Object.keys(groupedIncomes),
+    ...Object.keys(groupedExpenses)
+  ])).sort((a, b) => {
+    const [m1, y1] = a.split('/').map(Number);
+    const [m2, y2] = b.split('/').map(Number);
     return y1 !== y2 ? y1 - y2 : m1 - m2;
   });
-  const incomeData = incomeLabels.map(m => 
-    groupedIncomes[m].reduce((sum, inc) => sum + inc.amount, 0)
+
+  // ✅ Income chart
+  const incomeCtx = document.getElementById('income-chart').getContext('2d');
+  const incomeData = allMonths.map(m => groupedIncomes[m] 
+    ? groupedIncomes[m].reduce((sum, inc) => sum + inc.amount, 0) 
+    : 0
   );
-  
   new Chart(incomeCtx, {
     type: 'line',
     data: {
-      labels: incomeLabels,
+      labels: allMonths,
       datasets: [{
         label: 'Income Over Time',
         data: incomeData,
@@ -412,30 +247,19 @@ function renderCharts(filteredIncomes = incomes, filteredExpenses = expenses) {
         tension: 0.3
       }]
     },
-    options: {
-      responsive: true,
-      scales: {
-        y: { beginAtZero: true }
-      }
-    }
+    options: { responsive: true, scales: { y: { beginAtZero: true } } }
   });
 
-  // Expense over time (monthly) line chart
+  // ✅ Expense chart
   const expenseCtx = document.getElementById('expense-chart').getContext('2d');
-  const groupedExpenses = groupByMonth(filteredExpenses);
-  const expenseLabels = Object.keys(groupedExpenses).sort((a,b) => {
-    const [m1,y1] = a.split('/').map(Number);
-    const [m2,y2] = b.split('/').map(Number);
-    return y1 !== y2 ? y1 - y2 : m1 - m2;
-  });
-  const expenseData = expenseLabels.map(m => 
-    groupedExpenses[m].reduce((sum, ex) => sum + ex.amount, 0)
+  const expenseData = allMonths.map(m => groupedExpenses[m] 
+    ? groupedExpenses[m].reduce((sum, ex) => sum + ex.amount, 0) 
+    : 0
   );
-  
   new Chart(expenseCtx, {
     type: 'line',
     data: {
-      labels: expenseLabels,
+      labels: allMonths,
       datasets: [{
         label: 'Expenses Over Time',
         data: expenseData,
@@ -445,88 +269,56 @@ function renderCharts(filteredIncomes = incomes, filteredExpenses = expenses) {
         tension: 0.3
       }]
     },
-    options: {
-      responsive: true,
-      scales: {
-        y: { beginAtZero: true }
-      }
-    }
+    options: { responsive: true, scales: { y: { beginAtZero: true } } }
   });
 
-  // Expense by category pie chart
-  const categoryCtx = document.getElementById('category-chart').getContext('2d');
-  const categoryTotals = {};
-  filteredExpenses.forEach(ex => {
-    if (!categoryTotals[ex.category]) {
-      categoryTotals[ex.category] = 0;
-    }
-    categoryTotals[ex.category] += ex.amount;
-  });
-  
-  new Chart(categoryCtx, {
-    type: 'pie',
-    data: {
-      labels: Object.keys(categoryTotals),
-      datasets: [{
-        label: 'Expenses by Category',
-        data: Object.values(categoryTotals),
-        backgroundColor: [
-          'rgba(255, 99, 132, 0.6)',
-          'rgba(54, 162, 235, 0.6)',
-          'rgba(255, 206, 86, 0.6)',
-          'rgba(75, 192, 192, 0.6)',
-          'rgba(153, 102, 255, 0.6)',
-          'rgba(255, 159, 64, 0.6)'
-        ]
-      }]
-    },
-    options: {
-      responsive: true
-    }
-  });
+
+// Category pie chart
+const categoryCtx = document.getElementById('category-chart').getContext('2d');
+const categoryTotals = {};
+filteredExpenses.forEach(ex => {
+  if (!categoryTotals[ex.category]) categoryTotals[ex.category] = 0;
+  categoryTotals[ex.category] += ex.amount;
+});
+
+// Generate dynamic colors for each category
+const categoryLabels = Object.keys(categoryTotals);
+const categoryColors = categoryLabels.map(() => getRandomColor());
+
+new Chart(categoryCtx, {
+  type: 'pie',
+  data: {
+    labels: categoryLabels,
+    datasets: [{
+      label: 'Expenses by Category',
+      data: Object.values(categoryTotals),
+      backgroundColor: categoryColors
+    }]
+  },
+  options: { responsive: true }
+});
 }
 
-// Initial chart render
-renderCharts();
-
-// Re-render charts on data changes
-const originalSaveData = saveData;
-saveData = function() {
-  originalSaveData();
-  renderCharts();
-};
-
-const groupedExpenses = groupByMonth(expenses);
-console.log(groupedExpenses);
-
-const groupedIncomes = groupByMonth(incomes);
-console.log(groupedIncomes);
-
 /* === PDF export logic === */
-document.getElementById('export-pdf-btn').addEventListener('click', exportPDF);
+const exportPdfBtn = document.getElementById('export-pdf-btn');
+if (exportPdfBtn) exportPdfBtn.addEventListener('click', exportPDF);
 
 function exportPDF() {
+  if (!window.jspdf) return alert('jsPDF not loaded');
   const { jsPDF } = window.jspdf;
   const doc = new jsPDF();
-
-  // Add title
   doc.setFontSize(18);
   doc.text('Budget Tracker Report', 10, 15);
-
-  // Add summary
   doc.setFontSize(14);
   doc.text(document.querySelector('.income').textContent, 10, 30);
   doc.text(document.querySelector('.expenses').textContent, 10, 40);
   doc.text(document.querySelector('.balance').textContent, 10, 50);
 
-  // Add Income Table
   doc.setFontSize(16);
   doc.text('Income History', 10, 65);
   doc.setFontSize(10);
   let y = 75;
-  doc.text('Source', 10, y);
-  doc.text('Amount', 60, y);
-  doc.text('Date', 110, y);
+  doc.text('Source', 10, y); doc.text('Amount', 60, y); doc.text('Date', 110, y);
   y += 7;
   incomes.forEach(inc => {
     doc.text(inc.source, 10, y);
@@ -536,16 +328,12 @@ function exportPDF() {
     if (y > 270) { doc.addPage(); y = 20; }
   });
 
-  // Add Expense Table
   y += 10;
   doc.setFontSize(16);
   doc.text('Expenses History', 10, y);
   y += 10;
   doc.setFontSize(10);
-  doc.text('Title', 10, y);
-  doc.text('Amount', 50, y);
-  doc.text('Category', 90, y);
-  doc.text('Date', 130, y);
+  doc.text('Title', 10, y); doc.text('Amount', 50, y); doc.text('Category', 90, y); doc.text('Date', 130, y);
   y += 7;
   expenses.forEach(ex => {
     doc.text(ex.title, 10, y);
@@ -563,6 +351,7 @@ function exportPDF() {
 function getUniqueYears() {
   const years = new Set();
   incomes.concat(expenses).forEach(item => {
+    if (!item.date) return;
     const year = item.date.split('/')[2].split(' ')[0];
     years.add(year);
   });
@@ -571,6 +360,7 @@ function getUniqueYears() {
 
 function populateYearDropdown() {
   const yearSelect = document.getElementById('filter-year');
+  if (!yearSelect) return;
   yearSelect.innerHTML = '';
   const allOpt = document.createElement('option');
   allOpt.value = 'all';
@@ -614,114 +404,112 @@ function renderFilteredTables() {
   const isCurrent = isCurrentMonthSelected();
   // Income Table
   const incomeTbody = document.getElementById('income-table-body');
-  incomeTbody.innerHTML = '';
-  filteredIncomes.forEach((inc) => {
-    const row = incomeTbody.insertRow();
-    row.innerHTML = `
-      <td>${inc.source}</td>
-      <td>₦${inc.amount.toFixed(2)}</td>
-      <td>${inc.date}</td>
-      <td>
-        <button class="edit-btn" ${isCurrent ? '' : 'disabled'}>Edit</button>
-        <button class="delete-btn" ${isCurrent ? '' : 'disabled'}>Delete</button>
-      </td>`;
-    if (isCurrent) {
+  if (incomeTbody) {
+    incomeTbody.innerHTML = '';
+    filteredIncomes.forEach((inc) => {
+      const row = incomeTbody.insertRow();
+      row.innerHTML = `
+        <td>${inc.source}</td>
+        <td>₦${inc.amount.toFixed(2)}</td>
+        <td>${inc.date}</td>
+        <td>
+          <button class="edit-btn" ${isCurrent ? '' : 'disabled'}>Edit</button>
+          <button class="delete-btn" ${isCurrent ? '' : 'disabled'}>Delete</button>
+        </td>`;
+      if (isCurrent) {
+        row.querySelector('.edit-btn').onclick = () => beginEditIncome(inc._idx);
+        row.querySelector('.delete-btn').onclick = () => deleteIncome(inc._idx);
+      }
+    });
+  }
+  // Expense Table
+  const expenseTbody = document.getElementById('expense-table-body');
+  if (expenseTbody) {
+    expenseTbody.innerHTML = '';
+    filteredExpenses.forEach((ex) => {
+      const row = expenseTbody.insertRow();
+      row.innerHTML = `
+        <td>${ex.title}</td>
+        <td>₦${ex.amount.toFixed(2)}</td>
+        <td>${ex.category}</td>
+        <td>${ex.date}</td>
+        <td>
+          <button class="edit-btn" ${isCurrent ? '' : 'disabled'}>Edit</button>
+          <button class="delete-btn" ${isCurrent ? '' : 'disabled'}>Delete</button>
+        </td>`;
+      if (isCurrent) {
+        row.querySelector('.edit-btn').onclick = () => beginEditExpense(ex._idx);
+        row.querySelector('.delete-btn').onclick = () => deleteExpense(ex._idx);
+      }
+    });
+  }
+
+  // Update summary and charts
+  const totalIncome = filteredIncomes.reduce((s, i) => s + i.amount, 0);
+  const totalExpense = filteredExpenses.reduce((s, e) => s + e.amount, 0);
+  const balance = totalIncome - totalExpense;
+  document.querySelector('.income').textContent = `Total Income: ₦${totalIncome.toFixed(2)}`;
+  document.querySelector('.expenses').textContent = `Total Expenses: ₦${totalExpense.toFixed(2)}`;
+  document.querySelector('.balance').textContent = `Remaining Balance: ₦${balance.toFixed(2)}`;
+  renderCharts(filteredIncomes, filteredExpenses);
+  renderMonthlySummary(filteredIncomes, filteredExpenses);
+}
+
+/* Render custom filtered tables used by search */
+function renderFilteredTablesCustom(filteredIncomes, filteredExpenses) {
+  const incomeTbody = document.getElementById('income-table-body');
+  if (incomeTbody) {
+    incomeTbody.innerHTML = '';
+    filteredIncomes.forEach((inc, idx) => {
+      const row = incomeTbody.insertRow();
+      row.innerHTML = `
+        <td>${inc.source}</td>
+        <td>₦${inc.amount.toFixed(2)}</td>
+        <td>${inc.date}</td>
+        <td>
+          <button class="edit-btn">Edit</button>
+          <button class="delete-btn">Delete</button>
+        </td>`;
       row.querySelector('.edit-btn').onclick = () => beginEditIncome(inc._idx);
       row.querySelector('.delete-btn').onclick = () => deleteIncome(inc._idx);
-    }
-  });
-  // Expense Table
+    });
+  }
+
   const expenseTbody = document.getElementById('expense-table-body');
-  expenseTbody.innerHTML = '';
-  filteredExpenses.forEach((ex) => {
-    const row = expenseTbody.insertRow();
-    row.innerHTML = `
-      <td>${ex.title}</td>
-      <td>₦${ex.amount.toFixed(2)}</td>
-      <td>${ex.category}</td>
-      <td>${ex.date}</td>
-      <td>
-        <button class="edit-btn" ${isCurrent ? '' : 'disabled'}>Edit</button>
-        <button class="delete-btn" ${isCurrent ? '' : 'disabled'}>Delete</button>
-      </td>`;
-    if (isCurrent) {
+  if (expenseTbody) {
+    expenseTbody.innerHTML = '';
+    filteredExpenses.forEach((ex, idx) => {
+      const row = expenseTbody.insertRow();
+      row.innerHTML = `
+        <td>${ex.title}</td>
+        <td>₦${ex.amount.toFixed(2)}</td>
+        <td>${ex.category}</td>
+        <td>${ex.date}</td>
+        <td>
+          <button class="edit-btn">Edit</button>
+          <button class="delete-btn">Delete</button>
+        </td>`;
       row.querySelector('.edit-btn').onclick = () => beginEditExpense(ex._idx);
       row.querySelector('.delete-btn').onclick = () => deleteExpense(ex._idx);
-    }
-  });
-  // Update summary
+    });
+  }
+
+  // summary + charts
   const totalIncome = filteredIncomes.reduce((s, i) => s + i.amount, 0);
   const totalExpense = filteredExpenses.reduce((s, e) => s + e.amount, 0);
   const balance = totalIncome - totalExpense;
   document.querySelector('.income').textContent = `Total Income: ₦${totalIncome.toFixed(2)}`;
   document.querySelector('.expenses').textContent = `Total Expenses: ₦${totalExpense.toFixed(2)}`;
   document.querySelector('.balance').textContent = `Remaining Balance: ₦${balance.toFixed(2)}`;
-  // Update charts with filtered data
-  renderCharts(filteredIncomes, filteredExpenses);
-  // Update monthly summary
-  renderMonthlySummary(filteredIncomes, filteredExpenses);
-}
-
-function renderFilteredTablesCustom(filteredIncomes, filteredExpenses) {
-  // Income Table
-  const incomeTbody = document.getElementById('income-table-body');
-  incomeTbody.innerHTML = '';
-  let firstIncomeRow = null;
-  filteredIncomes.forEach((inc, idx) => {
-    const row = incomeTbody.insertRow();
-    if (idx === 0) firstIncomeRow = row;
-    row.innerHTML = `
-      <td>${inc.source}</td>
-      <td>₦${inc.amount.toFixed(2)}</td>
-      <td>${inc.date}</td>
-      <td>
-        <button class="edit-btn">Edit</button>
-        <button class="delete-btn">Delete</button>
-      </td>`;
-    row.querySelector('.edit-btn').onclick = () => beginEditIncome(inc._idx);
-    row.querySelector('.delete-btn').onclick = () => deleteIncome(inc._idx);
-  });
-  // Expense Table
-  const expenseTbody = document.getElementById('expense-table-body');
-  expenseTbody.innerHTML = '';
-  let firstExpenseRow = null;
-  filteredExpenses.forEach((ex, idx) => {
-    const row = expenseTbody.insertRow();
-    if (idx === 0) firstExpenseRow = row;
-    row.innerHTML = `
-      <td>${ex.title}</td>
-      <td>₦${ex.amount.toFixed(2)}</td>
-      <td>${ex.category}</td>
-      <td>${ex.date}</td>
-      <td>
-        <button class="edit-btn">Edit</button>
-        <button class="delete-btn">Delete</button>
-      </td>`;
-    row.querySelector('.edit-btn').onclick = () => beginEditExpense(ex._idx);
-    row.querySelector('.delete-btn').onclick = () => deleteExpense(ex._idx);
-  });
-  // Update summary
-  const totalIncome = filteredIncomes.reduce((s, i) => s + i.amount, 0);
-  const totalExpense = filteredExpenses.reduce((s, e) => s + e.amount, 0);
-  const balance = totalIncome - totalExpense;
-  document.querySelector('.income').textContent = `Total Income: ₦${totalIncome.toFixed(2)}`;
-  document.querySelector('.expenses').textContent = `Total Expenses: ₦${totalExpense.toFixed(2)}`;
-  document.querySelector('.balance').textContent = `Remaining Balance: ₦${balance.toFixed(2)}`;
-  // Update charts with filtered data
   renderCharts(filteredIncomes, filteredExpenses);
   renderMonthlySummary(filteredIncomes, filteredExpenses);
 }
-window.addEventListener('load', () => {
-  populateYearDropdown();
-  renderMonthlySummary();
-});
 
-// Category Management Logic
-let categories = [
-  "Transport", "Food", "Data", "Books", "Tithe", "Groceries", "Savings", "Rent", "Entertainment", "Others"
-];
+/* --- Category Management --- */
+let categories = ["Transport","Food","Data","Books","Tithe","Groceries","Savings","Rent","Entertainment","Others"];
 function renderCategoryList() {
   const list = document.getElementById('category-list');
+  if (!list) return;
   list.innerHTML = '';
   categories.forEach((cat, idx) => {
     const li = document.createElement('li');
@@ -733,7 +521,6 @@ function renderCategoryList() {
     li.style.borderRadius = '5px';
     li.style.color = '#500';
     li.style.fontWeight = 'bold';
-    // Edit button
     const editBtn = document.createElement('button');
     editBtn.textContent = 'Edit';
     editBtn.style.marginLeft = '6px';
@@ -745,7 +532,6 @@ function renderCategoryList() {
         renderCategoryDropdown();
       }
     };
-    // Delete button
     const delBtn = document.createElement('button');
     delBtn.textContent = 'Delete';
     delBtn.style.marginLeft = '6px';
@@ -774,6 +560,7 @@ document.getElementById('add-category-btn').onclick = () => {
 
 function renderCategoryDropdown() {
   const dropdown = document.getElementById('expense-category');
+  if (!dropdown) return;
   dropdown.innerHTML = '';
   categories.forEach(cat => {
     const opt = document.createElement('option');
@@ -782,84 +569,57 @@ function renderCategoryDropdown() {
     dropdown.appendChild(opt);
   });
 }
-window.addEventListener('load', () => {
-  renderCategoryList();
-  renderCategoryDropdown();
-});
 
-// Search Bar Logic
+/* --- Search Bar Logic --- */
 function searchTransactions() {
   const query = document.getElementById('search-bar').value.trim().toLowerCase();
+
   if (!query) {
     renderFilteredTables();
     return;
   }
-  // Search incomes and expenses
-  const filteredIncomes = incomes.map((item, idx) => ({...item, _idx: idx})).filter(item =>
-    item.source.toLowerCase().includes(query) || item.date.toLowerCase().includes(query)
-  );
-  const filteredExpenses = expenses.map((item, idx) => ({...item, _idx: idx})).filter(item =>
-    item.title.toLowerCase().includes(query) || item.category.toLowerCase().includes(query) || item.date.toLowerCase().includes(query)
-  );
+
+  const filteredIncomes = incomes.map((item, idx) => ({...item, _idx: idx}))
+    .filter(item =>
+      (item.source || '').toLowerCase().includes(query) || (item.date || '').toLowerCase().includes(query)
+    );
+
+  const filteredExpenses = expenses.map((item, idx) => ({...item, _idx: idx}))
+    .filter(item =>
+      (item.title || '').toLowerCase().includes(query) ||
+      (item.category || '').toLowerCase().includes(query) ||
+      (item.date || '').toLowerCase().includes(query)
+    );
+
+  const incomeTable = document.getElementById('income-table-body');
+  const expenseTable = document.getElementById('expense-table-body');
+
+  if (filteredIncomes.length === 0 && filteredExpenses.length === 0) {
+    if (incomeTable) incomeTable.innerHTML = `<tr><td colspan="4" style="text-align:center; color:red; font-weight:bold;">No results found</td></tr>`;
+    if (expenseTable) expenseTable.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red; font-weight:bold;">No results found</td></tr>`;
+    document.querySelector("#income-section").scrollIntoView({ behavior: "smooth" });
+    return;
+  }
+
   renderFilteredTablesCustom(filteredIncomes, filteredExpenses);
+  document.querySelector("#income-section").scrollIntoView({ behavior: "smooth" });
 }
 
-document.getElementById('search-btn').onclick = searchTransactions;
-document.getElementById('search-bar').oninput = searchTransactions;
-
-function renderFilteredTablesCustom(filteredIncomes, filteredExpenses) {
-  // Income Table
-  const incomeTbody = document.getElementById('income-table-body');
-  incomeTbody.innerHTML = '';
-  let firstIncomeRow = null;
-  filteredIncomes.forEach((inc, idx) => {
-    const row = incomeTbody.insertRow();
-    if (idx === 0) firstIncomeRow = row;
-    row.innerHTML = `
-      <td>${inc.source}</td>
-      <td>₦${inc.amount.toFixed(2)}</td>
-      <td>${inc.date}</td>
-      <td>
-        <button class="edit-btn">Edit</button>
-        <button class="delete-btn">Delete</button>
-      </td>`;
-    row.querySelector('.edit-btn').onclick = () => beginEditIncome(inc._idx);
-    row.querySelector('.delete-btn').onclick = () => deleteIncome(inc._idx);
+const searchBtn = document.getElementById('search-btn');
+if (searchBtn) searchBtn.onclick = searchTransactions;
+const searchBar = document.getElementById('search-bar');
+if (searchBar) {
+  searchBar.oninput = searchTransactions;
+  searchBar.addEventListener('keydown', function(e) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      searchTransactions();
+    }
   });
-  // Expense Table
-  const expenseTbody = document.getElementById('expense-table-body');
-  expenseTbody.innerHTML = '';
-  let firstExpenseRow = null;
-  filteredExpenses.forEach((ex, idx) => {
-    const row = expenseTbody.insertRow();
-    if (idx === 0) firstExpenseRow = row;
-    row.innerHTML = `
-      <td>${ex.title}</td>
-      <td>₦${ex.amount.toFixed(2)}</td>
-      <td>${ex.category}</td>
-      <td>${ex.date}</td>
-      <td>
-        <button class="edit-btn">Edit</button>
-        <button class="delete-btn">Delete</button>
-      </td>`;
-    row.querySelector('.edit-btn').onclick = () => beginEditExpense(ex._idx);
-    row.querySelector('.delete-btn').onclick = () => deleteExpense(ex._idx);
-  });
-  // Update summary
-  const totalIncome = filteredIncomes.reduce((s, i) => s + i.amount, 0);
-  const totalExpense = filteredExpenses.reduce((s, e) => s + e.amount, 0);
-  const balance = totalIncome - totalExpense;
-  document.querySelector('.income').textContent = `Total Income: ₦${totalIncome.toFixed(2)}`;
-  document.querySelector('.expenses').textContent = `Total Expenses: ₦${totalExpense.toFixed(2)}`;
-  document.querySelector('.balance').textContent = `Remaining Balance: ₦${balance.toFixed(2)}`;
-  // Update charts with filtered data
-  renderCharts(filteredIncomes, filteredExpenses);
-  renderMonthlySummary(filteredIncomes, filteredExpenses);
 }
 
 /* ─── Monthly Summary ─── */
 function renderMonthlySummary(filteredIncomes = incomes, filteredExpenses = expenses) {
-  // Group by month/year
   const groupedIncomes = groupByMonth(filteredIncomes);
   const groupedExpenses = groupByMonth(filteredExpenses);
   const months = Array.from(new Set([...Object.keys(groupedIncomes), ...Object.keys(groupedExpenses)])).sort((a,b) => {
@@ -875,20 +635,44 @@ function renderMonthlySummary(filteredIncomes = incomes, filteredExpenses = expe
     html += `<tr><td>${monthYear}</td><td style='color:#22c55e;'>₦${income.toFixed(2)}</td><td style='color:#ef4444;'>₦${expense.toFixed(2)}</td><td style='color:#2563eb;'>₦${balance.toFixed(2)}</td></tr>`;
   });
   html += '</tbody></table>';
-  document.getElementById('monthly-summary-content').innerHTML = html;
+  const el = document.getElementById('monthly-summary-content');
+  if (el) el.innerHTML = html;
 }
 
 /* === Service Worker Registration for PWA === */
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/service-worker.js')
-      .then(registration => {
-        console.log('Service Worker registered with scope:', registration.scope);
-      })
-      .catch(error => {
-        console.error('Service Worker registration failed:', error);
-      });
+      .then(registration => { console.log('Service Worker registered with scope:', registration.scope); })
+      .catch(error => { console.error('Service Worker registration failed:', error); });
   });
 }
 
+/* --- Filter controls listeners --- */
+const fy = document.getElementById('filter-year');
+const fm = document.getElementById('filter-month');
+if (fy) fy.addEventListener('change', renderFilteredTables);
+if (fm) fm.addEventListener('change', renderFilteredTables);
 
+/* === Initial page setup on load === */
+window.addEventListener('load', () => {
+  // Turn on dark mode if previously set
+  const darkMode = JSON.parse(localStorage.getItem('darkMode'));
+  if (darkMode && toggle) {
+    document.body.classList.add('dark-mode');
+    toggle.checked = true;
+  }
+
+  // populate dropdowns, lists and render UI
+  populateYearDropdown();
+  renderCategoryList();
+  renderCategoryDropdown();
+  renderIncomes();
+  renderExpenses();
+  updateSummary();
+  renderCharts();
+  renderMonthlySummary();
+  renderFilteredTables(); // show filtered results (default = all)
+});
+// Display current year in footer
+    document.getElementById("year").textContent = new Date().getFullYear();
