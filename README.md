@@ -35,7 +35,7 @@ A simple and elegant web app to track your **incomes and expenses**, visualize t
 
 ##  Demo Screenshots
 
-![Dashboard Screenshot](budget-tracker.png)
+![Dashboard Screenshot](./screenshots/budget-tracker.png)
 
 ---
 
