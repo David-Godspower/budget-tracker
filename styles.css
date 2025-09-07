@@ -1,3 +1,112 @@
+body {
+    background-color: #f4f6fb;
+    color: #222;
+}
+body.dark-mode {
+    background: #181a20;
+    color: #f4f6fb;
+}
+
+h1, h2 {
+    color: #2d3a4a;
+}
+h3, .summary h3, #filter-section label, #category-management h3 {
+    color: #2563eb;
+}
+
+/* Forms */
+#income-form, #expense-form {
+    background: #fff;
+    border: 1px solid #dbeafe;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+#income-form label, #expense-form label {
+    color: #222;
+}
+#income-form input, #expense-form input, #expense-form select {
+    border: 1px solid #dbeafe;
+    background: #f4f6fb;
+    color: #222;
+}
+
+/* Buttons */
+button, #filter-btn, #export-btn, #reset-btn, #export-pdf-btn, #add-category-btn, #search-btn {
+    background: #2563eb;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+button:hover, #filter-btn:hover, #export-btn:hover, #reset-btn:hover, #export-pdf-btn:hover, #add-category-btn:hover, #search-btn:hover {
+    background: #1e40af;
+    color: #fff;
+}
+
+/* Tables */
+table {
+    background: #fff;
+    color: #222;
+    border: 1px solid #dbeafe;
+}
+th {
+    background: #2563eb;
+    color: #fff;
+}
+td {
+    color: #222;
+}
+
+/* Summary, Filter, Charts, Category, Search */
+.summary, #filter-section, #charts, #category-management, #search-section {
+    background: #fff;
+    color: #222;
+    border: 1px solid #dbeafe;
+}
+
+/* Category Pills */
+#category-list li {
+    background: #e0e7ff !important;
+    color: #222 !important;
+}
+
+/* Dark Mode Adjustments */
+body.dark-mode h1, body.dark-mode h2, body.dark-mode h3, body.dark-mode .summary h3, body.dark-mode #filter-section label, body.dark-mode #category-management h3 {
+    color: #60a5fa;
+}
+body.dark-mode #income-form, body.dark-mode #expense-form, body.dark-mode .summary, body.dark-mode #filter-section, body.dark-mode #charts, body.dark-mode #category-management, body.dark-mode #search-section {
+    background: #23272f;
+    color: #f4f6fb;
+    border: 1px solid #334155;
+}
+body.dark-mode table {
+    background: #23272f;
+    color: #f4f6fb;
+    border: 1px solid #334155;
+}
+body.dark-mode th {
+    background: #2563eb;
+    color: #fff;
+}
+body.dark-mode td {
+    color: #f4f6fb;
+}
+body.dark-mode button, body.dark-mode #filter-btn, body.dark-mode #export-btn, body.dark-mode #reset-btn, body.dark-mode #export-pdf-btn, body.dark-mode #add-category-btn, body.dark-mode #search-btn {
+    background: #2563eb;
+    color: #fff;
+}
+body.dark-mode button:hover, body.dark-mode #filter-btn:hover, body.dark-mode #export-btn:hover, body.dark-mode #reset-btn:hover, body.dark-mode #export-pdf-btn:hover, body.dark-mode #add-category-btn:hover, body.dark-mode #search-btn:hover {
+    background: #60a5fa;
+    color: #181a20;
+}
+body.dark-mode #category-list li {
+    background: #334155 !important;
+    color: #f4f6fb !important;
+}
+
+/* --- End Modern Neutral Color Palette --- */
 body{
     font-family: Arial, sans-serif;
     background-color:lightblue;
@@ -45,6 +154,7 @@ table {
     border-collapse: collapse;
     width:80%;
      margin:20px auto;
+    
 }
 th, td {
     border: 1px solid #888;
@@ -85,18 +195,387 @@ thead {
         text-decoration: none;
         color:yellow;
     }
- footer{
-    background-color: #ff153f;
-    margin-top:20px;
-    font-size:30px;
-    padding:10px;
-    text-align: center;
-    font-weight: bold;
-    color:white;
-    position: relative;
-    left: 0;
+ 
+footer{
+    background-color: #1F2937;
     bottom: 0;
-    width: 100%;
-    height: auto;
+    left:0;
+    position:static;
+    width:100%;
+    padding: 20px 0;
+    text-align: center;
+    color: white;
+    font-weight: bold;
+}
+footer p{
+      font-size: 25px;
+}
+.icons{
+    font-size: 48px;
+    color: orange;
+    margin: 0 10px;
+    transition: color 0.3s;
 
- }
+}
+#linkedin:hover{
+    color:blue;
+}
+
+#x:hover{
+    color:black;
+}
+#facebook:hover{
+    color:blue;
+}
+#github:hover{
+    color:#4078c0 ;
+}
+#gmail:hover{
+    color: red;
+}
+
+
+
+/* --- Filter Section Styling --- */
+#filter-section {
+    background: #fffbe6;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 18px 20px;
+    margin: 25px auto;
+    max-width: 600px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+#filter-section label {
+    font-weight: bold;
+    color: #ff153f;
+    margin-right: 5px;
+}
+#filter-section select {
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ffb5aa;
+    background: #fff;
+    font-size: 16px;
+}
+#filter-btn {
+    background: #ff153f;
+    color: #fff;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 18px;
+    margin-left: 10px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#filter-btn:hover {
+    background: #ff4d6d;
+}
+
+/* --- Data Controls --- */
+[data-controls],
+#export-btn, #reset-btn, #export-pdf-btn {
+    margin: 8px 4px;
+    padding: 10px 18px;
+    border-radius: 5px;
+    background: #ffb5aa;
+    color: #500;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#export-btn:hover, #reset-btn:hover, #export-pdf-btn:hover {
+    background: #ff153f;
+    color: #fff;
+}
+
+/* --- Charts Section --- */
+#charts {
+    background: #fffbe6;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 20px;
+    margin: 30px auto;
+    max-width: 600px;
+}
+canvas {
+    margin-bottom: 30px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.05);
+}
+
+/* --- Income and Expense Form Alignment --- */
+#income-form, #expense-form {
+    text-align: left;
+    background: #f9fafb;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 18px 20px;
+    margin: 25px auto;
+    max-width: 600px;
+    border-radius: 8px;
+}
+#income-form h3, #expense-form legend {
+    color: #ff153f;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin-bottom: 10px;
+    text-align: left;
+}
+#income-form label, #expense-form label {
+    display: inline-block;
+    width: 120px;
+    font-weight: bold;
+    color: #222;
+    margin-bottom: 6px;
+}
+#income-form input, #expense-form input, #expense-form select {
+    width: 60%;
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    border-radius: 5px;
+    border: 1px solid #ffb5aa;
+    background: #fff;
+    font-size: 16px;
+}
+#income-form button, #expense-form button {
+    margin-top: 10px;
+    background: #ffb5aa;
+    color: #222;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 18px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+#income-form button:hover, #expense-form button:hover {
+    background: #ff153f;
+    color: #fff;
+}
+
+/* --- Income, Expenses, Summary Color Highlights --- */
+.income {
+    color: #22c55e;
+    font-weight: bold;
+    font-size: 1.3em;
+    margin-bottom: 8px;
+}
+.expenses {
+    color: #ef4444;
+    font-weight: bold;
+    font-size: 1.3em;
+    margin-bottom: 8px;
+}
+.balance {
+    color: #2563eb;
+    font-weight: bold;
+    font-size: 1.3em;
+    margin-bottom: 8px;
+}
+body.dark-mode .income {
+    color: #4ade80;
+}
+body.dark-mode .expenses {
+    color: #f87171;
+}
+body.dark-mode .balance {
+    color: #60a5fa;
+}
+
+/* --- Responsive Design --- */
+@media (max-width: 700px) {
+    #filter-section, #charts, .summary, form {
+        max-width: 98vw;
+        padding: 10px;
+    }
+    table {
+        width: 98vw;
+        font-size: 14px;
+    }
+    h1 { font-size: 38px; }
+    h3, .income, .expenses, .balance { font-size: 28px; }
+}
+
+/* --- Dark Mode --- */
+body.dark-mode {
+    background: #222;
+    color: #fff;
+}
+body.dark-mode #filter-section,
+body.dark-mode #charts,
+body.dark-mode .summary,
+body.dark-mode form {
+    background: #333;
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+body.dark-mode table {
+    background: #222;
+    color: #fff;
+}
+body.dark-mode th, body.dark-mode td {
+    border-color: #ffb5aa;
+}
+body.dark-mode #filter-btn,
+body.dark-mode #export-btn,
+body.dark-mode #reset-btn,
+body.dark-mode #export-pdf-btn {
+    background: #ff4d6d;
+    color: #fff;
+}
+body.dark-mode #filter-btn:hover,
+body.dark-mode #export-btn:hover,
+body.dark-mode #reset-btn:hover,
+body.dark-mode #export-pdf-btn:hover {
+    background: #ff153f;
+}
+
+/* --- Dark Mode Toggle Top Right --- */
+#dark-mode-toggle {
+    accent-color: #ff153f;
+}
+.dark-toggle-container {
+    position: fixed;
+    top: 18px;
+    right: 24px;
+    z-index: 1000;
+    background: #fffbe6;
+    border-radius: 20px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 8px 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: bold;
+    color: #ff153f;
+}
+body.dark-mode .dark-toggle-container {
+    background: #333;
+    color: #fff;
+}
+
+/* --- Text Alignment and Modern Color Palette --- */
+body, h1, h2, h3, .summary, #filter-section, #charts, form, table, th, td, #category-management, #search-section {
+    text-align: left;
+}
+h1, h2 {
+    text-align: center;
+    color: #2d2d2d;
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+h3 {
+    color: #ff153f;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    margin-bottom: 10px;
+}
+.summary {
+    background: #f9fafb;
+    color: #222;
+    border: 1px solid #eee;
+}
+#filter-section, #charts, #category-management, #search-section {
+    background: #f9fafb;
+    color: #222;
+    border: 1px solid #eee;
+}
+table {
+    background: #fff;
+    color: #222;
+    border: 1px solid #eee;
+}
+th {
+    background: #ffb5aa;
+    color: #222;
+}
+td {
+    color: #333;
+}
+input, select, button {
+    font-family: 'Segoe UI', Arial, sans-serif;
+}
+button {
+    background-color: #ffb5aa;
+    color: #222;
+    font-weight: bold;
+    border: none;
+    border-radius: 5px;
+    padding: 10px 20px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+button:hover {
+    background-color: #ff153f;
+    color: #fff;
+}
+/* --- End Modern Color Palette --- */
+
+/* --- Income and Expenses Section Styling --- */
+#income-section, #expenses-section {
+    margin: 2em auto;
+    max-width: 700px;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.07);
+    padding: 20px 28px;
+}
+#income-section h2 {
+    color: #22c55e;
+    font-size: 2em;
+    margin-bottom: 10px;
+    text-align: left;
+}
+#expenses-section h2 {
+    color: #ef4444;
+    font-size: 2em;
+    margin-bottom: 10px;
+    text-align: left;
+}
+#income-section h3, #expenses-section h3 {
+    color: #2563eb;
+    font-size: 1.2em;
+    margin-bottom: 8px;
+    text-align: left;
+}
+#income-section table, #expenses-section table {
+    margin-top: 18px;
+    width: 100%;
+    border-radius: 8px;
+    background: #f9fafb;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.04);
+}
+#income-section th, #expenses-section th {
+    background: #2563eb;
+    color: #fff;
+    font-weight: bold;
+}
+#income-section td, #expenses-section td {
+    color: #222;
+    background: #fff;
+}
+body.dark-mode #income-section, body.dark-mode #expenses-section {
+    background: #23272f;
+    color: #f4f6fb;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+body.dark-mode #income-section table, body.dark-mode #expenses-section table {
+    background: #23272f;
+    color: #f4f6fb;
+}
+body.dark-mode #income-section th, body.dark-mode #expenses-section th {
+    background: #2563eb;
+    color: #fff;
+}
+body.dark-mode #income-section td, body.dark-mode #expenses-section td {
+    color: #f4f6fb;
+    background: #23272f;
+}
+body.dark-mode #income-section label,
+body.dark-mode #expenses-section label {
+    color: #f4f6fb;
+}
