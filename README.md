@@ -60,7 +60,7 @@ No signup, no servers — **all data is stored safely on your device** 🔒.
 - Advanced chart comparisons (month-to-month, YoY trends)
 
 ## 👨‍💻 About the Developer 
-Built with passion by David Godspower Ajala (D.G.A.) ✨
+Built with passion by [David Godspower Ajala (D.G.A.)](https://david-godspower.github.io/david-portfolio)✨
 I enjoy creating intuitive tools that help people budget smarter and live better.
 
 ## 📩 Contact: 
