@@ -8,15 +8,6 @@
          <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-        <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-WDEBN85V4M"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-WDEBN85V4M');
-</script>
 </head>
 <body>
     <h1>Budget Tracker</h1>
@@ -29,14 +20,14 @@
     </div>
 
     <!-- Income Section -->
-    <section id="income-section" style="margin: 2em 0; max-width: 700px; background: #f9fafb; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 20px;">
-      <h2 style="color:#22c55e;">Income</h2>
+    <section id="income-section" style="margin: 2em 0; max-width: 700px; background: #f4f4f4; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 20px;">
+      <h2 style="color:#2563eb;">Income</h2>
       <!-- Income Form -->
   <form id="income-form">
     <h3>Add Income</h3><br>
-    <label for="income-source">Income Source:</label>
+    <label for="income-source" style="color: #2563eb;">Income Source:</label>
     <input type="text" id="income-source" placeholder="Income Source" pattern="[A-Za-z\s]+" title="Letters only" required><br>
-     <label for="income-amount">Amount:</label>
+     <label for="income-amount" style="color: #2563eb;">Amount:</label>
     <input type="number" id="income-amount" placeholder="Amount (₦)" step="0.01" required><br>
     <button type="submit">Add Income</button>
   </form>
@@ -50,15 +41,15 @@
     </section>
 
     <!-- Expenses Section -->
-    <section id="expenses-section" style="margin: 2em 0; max-width: 700px; background: #f9fafb; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 20px;">
-  <h2 style="color:#ef4444;">Expenses</h2>
+    <section id="expenses-section" style="margin: 2em 0; max-width: 700px; background: #f4f4f4; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 20px;">
+  <h2 style="color:#2563eb;">Expenses</h2>
   <form id="expense-form">
     <h3>Add Expenses</h3><br>
-    <label for="title">Title:</label>
-    <input type="text" id="expense-title" pattern="[A-Za-z\s]+" title="Letters only" required><br>
-    <label for="amount">Amount:</label>
-    <input type="number" id="expense-amount" step="0.01" required><br>
-    <label for="category">Category:</label>
+    <label for="title" style="color: #2563eb;">Title:</label>
+    <input type="text" id="expense-title" pattern="[A-Za-z\s]+" placeholder="Expense Title" title="Letters only" required><br>
+    <label for="amount" style="color: #2563eb;">Amount:</label>
+    <input type="number" id="expense-amount" placeholder="Amount (₦)" step="0.01" required><br>
+    <label for="category" style="color: #2563eb;">Category:</label>
     <select id="expense-category">
         <option>Transport</option>
          <option>Food</option>
@@ -148,12 +139,11 @@
   <div id="monthly-summary-content"></div>
 </div>
 <footer>
-        <p>David Godspower Ajala (D.G.A.) &copy <span id="year"></span></p><br>
-            <!--<a href="https://github.com/david-godspower" target="_blank"><i class="fab fa-github icons" id="github"></i></a>-->
+        <p><a href="https://david-godspower.github.io/david-portfolio/" target="_blank" style="color: white; cursor: pointer; text-decoration: none; font-size:24px;">David Godspower Ajala (D.G.A.) &copy <span id="year"></span></a></p><br>
             <a href="https://www.linkedin.com/in/david-ajala-a93b862a1/" target="_blank"><i class="fab fa-linkedin icons" id="linkedin"></i></a>
             <a href="mailto:ajaladavid11@gmail.com" target="_blank"><i class="fas fa-envelope icons" id="gmail"></i></a>
             <a href="https://web.facebook.com/facebook.comDavidGodpowerAjalaDGA/" target="_blank"><i class="fab fa-facebook icons" id="facebook"></i></a>
-            <a href="https://x.com/ajala28981" target="_blank"><i class="fab fa-x-twitter icons" id="x"></i></a>
+            <a href="https://x.com/ajala28981" target="_blank"><i class="fab fa-x icons" id="x"></i></a>
     </footer>
 
     <script src="script.js"></script>
