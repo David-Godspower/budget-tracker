@@ -1,59 +1,118 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>Budget Tracker | Track your incomes and expenses</title>
-        <link rel="stylesheet" href="styles.css">
-        <!-- Font Awesome -->
-         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <title>Budget Tracker | Track your incomes and expenses</title>
+    <link rel="stylesheet" href="styles.css" />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  </head>
+  <body>
     <h1>Budget Tracker</h1>
     <h2>A Simple Web App to Track your Incomes and Expenses.</h2>
-     <!-- Dark Mode Toggle Top Right -->
-     <div class="dark-toggle-container">
-      <label for="dark-mode-toggle" style="margin:0;cursor:pointer;">🌙 Dark Mode
-        <input type="checkbox" id="dark-mode-toggle">
+    <!-- Dark Mode Toggle Top Right -->
+    <div class="dark-toggle-container">
+      <label for="dark-mode-toggle" style="margin: 0; cursor: pointer"
+        >🌙 Dark Mode
+        <input type="checkbox" id="dark-mode-toggle" />
       </label>
     </div>
 
     <!-- Income Section -->
-    <section id="income-section" style="margin: 2em 0; max-width: 700px; background: #f4f4f4; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 20px;">
-      <h2 style="color:#2563eb;">Income</h2>
+    <section
+      id="income-section"
+      style="
+        margin: 2em 0;
+        max-width: 700px;
+        background: #f4f4f4;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        padding: 20px;
+      "
+    >
+      <h2 style="color: #2563eb">Income</h2>
       <!-- Income Form -->
-  <form id="income-form">
-    <h3>Add Income</h3><br>
-    <label for="income-source" style="color: #2563eb;">Income Source:</label>
-    <input type="text" id="income-source" placeholder="Income Source" pattern="[A-Za-z\s]+" title="Letters only" required><br>
-     <label for="income-amount" style="color: #2563eb;">Amount:</label>
-    <input type="number" id="income-amount" placeholder="Amount (₦)" step="0.01" required><br>
-    <button type="submit">Add Income</button>
-  </form>
+      <form id="income-form">
+        <h3>Add Income</h3>
+        <br />
+        <label for="income-source" style="color: #2563eb">Income Source:</label>
+        <input
+          type="text"
+          id="income-source"
+          placeholder="Income Source"
+          pattern="[A-Za-z\s]+"
+          title="Letters only"
+          required
+        /><br />
+        <label for="income-amount" style="color: #2563eb">Amount:</label>
+        <input
+          type="number"
+          id="income-amount"
+          placeholder="Amount (₦)"
+          step="0.01"
+          required
+        /><br />
+        <button type="submit">Add Income</button>
+      </form>
 
-    <!-- Income Table -->
-  <h3><strong>Income History</strong></h3>
-  <table>
-    <thead><tr><th>Source</th><th>Amount</th><th>Date</th><th>Actions</th></tr></thead>
-    <tbody id="income-table-body"></tbody>
-  </table>
+      <!-- Income Table -->
+      <h3><strong>Income History</strong></h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Source</th>
+            <th>Amount</th>
+            <th>Date</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="income-table-body"></tbody>
+      </table>
     </section>
 
     <!-- Expenses Section -->
-    <section id="expenses-section" style="margin: 2em 0; max-width: 700px; background: #f4f4f4; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 20px;">
-  <h2 style="color:#2563eb;">Expenses</h2>
-  <form id="expense-form">
-    <h3>Add Expenses</h3><br>
-    <label for="title" style="color: #2563eb;">Title:</label>
-    <input type="text" id="expense-title" pattern="[A-Za-z\s]+" placeholder="Expense Title" title="Letters only" required><br>
-    <label for="amount" style="color: #2563eb;">Amount:</label>
-    <input type="number" id="expense-amount" placeholder="Amount (₦)" step="0.01" required><br>
-    <label for="category" style="color: #2563eb;">Category:</label>
-    <select id="expense-category">
-        <option>Transport</option>
-         <option>Food</option>
-          <option>Data</option> 
+    <section
+      id="expenses-section"
+      style="
+        margin: 2em 0;
+        max-width: 700px;
+        background: #f4f4f4;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        padding: 20px;
+      "
+    >
+      <h2 style="color: #2563eb">Expenses</h2>
+      <form id="expense-form">
+        <h3>Add Expenses</h3>
+        <br />
+        <label for="title" style="color: #2563eb">Title:</label>
+        <input
+          type="text"
+          id="expense-title"
+          pattern="[A-Za-z\s]+"
+          placeholder="Expense Title"
+          title="Letters only"
+          required
+        /><br />
+        <label for="amount" style="color: #2563eb">Amount:</label>
+        <input
+          type="number"
+          id="expense-amount"
+          placeholder="Amount (₦)"
+          step="0.01"
+          required
+        /><br />
+        <label for="category" style="color: #2563eb">Category:</label>
+        <select id="expense-category">
+          <option>Transport</option>
+          <option>Food</option>
+          <option>Data</option>
           <option>Books</option>
           <option>Tithe</option>
           <option>Groceries</option>
@@ -61,43 +120,41 @@
           <option>Rent</option>
           <option>Entertainment</option>
           <option>Others</option>
-    </select>
-    <button>Add Expenses</button>
-    </form>
-    <!-- Income Table -->
-  <h3><strong>Expenses History</strong></h3>
-    <table border="1" cellpadding="5">
+        </select>
+        <button>Add Expenses</button>
+      </form>
+      <!-- Income Table -->
+      <h3><strong>Expenses History</strong></h3>
+      <table border="1" cellpadding="5">
         <thead>
-            <th>Title</th>
-            <th>Amount</th>
-            <th>Category</th>
-            <th>Date</th>
-            <th>Actions</th>
+          <th>Title</th>
+          <th>Amount</th>
+          <th>Category</th>
+          <th>Date</th>
+          <th>Actions</th>
         </thead>
         <tbody id="expense-table-body"></tbody>
-    </table>
+      </table>
     </section>
     <div class="summary">
-    <h3>Summary</h3>
-    <p class="income" >Total Income: ₦ </p>
-    <p class="expenses">Total Expenses: ₦</p>
-    <p class="balance" ><strong>Remaining Balance: ₦</strong></p>
+      <h3>Summary</h3>
+      <p class="income">Total Income: ₦</p>
+      <p class="expenses">Total Expenses: ₦</p>
+      <p class="balance"><strong>Remaining Balance: ₦</strong></p>
     </div>
     <!-- Data Import/Export Controls -->
-    <div style="margin: 1em 0;">
+    <div style="margin: 1em 0">
       <button id="reset-btn">Reset Budget</button>
       <button id="export-pdf-btn">Generate Statement PDF</button>
     </div>
 
-   
-
     <!-- Charts Section -->
-    <div id="charts" style="margin:2em 0; max-width:600px;">
+    <div id="charts" style="margin: 2em 0; max-width: 600px">
       <!-- Chart canvases will be injected by JS -->
     </div>
 
     <!-- Filter Section -->
-    <div id="filter-section" style="margin: 1em 0;">
+    <div id="filter-section" style="margin: 1em 0">
       <label for="filter-year">Year:</label>
       <select id="filter-year"></select>
       <label for="filter-month">Month:</label>
@@ -112,7 +169,7 @@
         <option value="07">July</option>
         <option value="08">August</option>
         <option value="09">September</option>
-        <option value="10">October</option> 
+        <option value="10">October</option>
         <option value="11">November</option>
         <option value="12">December</option>
       </select>
@@ -120,31 +177,122 @@
     </div>
 
     <!-- Category Management Section -->
-    <div id="category-management" style="margin: 1em 0; max-width:600px; background:#fffbe6; border-radius:8px; box-shadow:0 2px 8px rgba(0,0,0,0.07); padding:18px 20px;">
-      <h3 style="color:#ff153f;">Manage Categories</h3>
-      <input type="text" id="new-category" placeholder="Add new category" style="padding:8px 12px; border-radius:5px; border:1px solid #ffb5aa;">
-      <button id="add-category-btn" style="background:#ff153f; color:#fff; font-weight:bold; border:none; border-radius:5px; padding:10px 18px; margin-left:10px; cursor:pointer;">Add</button>
-      <ul id="category-list" style="list-style:none; padding:0; margin-top:10px;"></ul>
+    <div
+      id="category-management"
+      style="
+        margin: 1em 0;
+        max-width: 600px;
+        background: #fffbe6;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        padding: 18px 20px;
+      "
+    >
+      <h3 style="color: #ff153f">Manage Categories</h3>
+      <input
+        type="text"
+        id="new-category"
+        placeholder="Add new category"
+        style="padding: 8px 12px; border-radius: 5px; border: 1px solid #ffb5aa"
+      />
+      <button
+        id="add-category-btn"
+        style="
+          background: #ff153f;
+          color: #fff;
+          font-weight: bold;
+          border: none;
+          border-radius: 5px;
+          padding: 10px 18px;
+          margin-left: 10px;
+          cursor: pointer;
+        "
+      >
+        Add
+      </button>
+      <ul
+        id="category-list"
+        style="list-style: none; padding: 0; margin-top: 10px"
+      ></ul>
     </div>
 
     <!-- Search Bar -->
-    <div id="search-section" style="margin: 1em 0; max-width:600px;">
-      <input type="text" id="search-bar" placeholder="Search transactions..." style="width:80%; padding:10px; border-radius:5px; border:1px solid #ffb5aa;">
-      <button id="search-btn" style="background:#ff153f; color:#fff; font-weight:bold; border:none; border-radius:5px; padding:10px 18px; margin-left:10px; cursor:pointer;">Search</button>
+    <div id="search-section" style="margin: 1em 0; max-width: 600px">
+      <input
+        type="text"
+        id="search-bar"
+        placeholder="Search transactions..."
+        style="
+          width: 80%;
+          padding: 10px;
+          border-radius: 5px;
+          border: 1px solid #ffb5aa;
+        "
+      />
+      <button
+        id="search-btn"
+        style="
+          background: #ff153f;
+          color: #fff;
+          font-weight: bold;
+          border: none;
+          border-radius: 5px;
+          padding: 10px 18px;
+          margin-left: 10px;
+          cursor: pointer;
+        "
+      >
+        Search
+      </button>
     </div>
-    
+
     <!-- Monthly Summary Section -->
-<div id="monthly-summary" style="margin: 2em auto; max-width: 700px; background: #fff; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.07); padding: 20px 28px;">
-  <h2 style="color:#2563eb;">Monthly Summary</h2>
-  <div id="monthly-summary-content"></div>
-</div>
-<footer>
-        <p><a href="https://david-godspower.github.io/david-portfolio/" target="_blank" style="color: white; cursor: pointer; text-decoration: none; font-size:24px;">David Godspower Ajala (D.G.A.) &copy <span id="year"></span></a></p><br>
-            <a href="https://www.linkedin.com/in/david-ajala-a93b862a1/" target="_blank"><i class="fab fa-linkedin icons" id="linkedin"></i></a>
-            <a href="mailto:ajaladavid11@gmail.com" target="_blank"><i class="fas fa-envelope icons" id="gmail"></i></a>
-            <a href="https://web.facebook.com/facebook.comDavidGodpowerAjalaDGA/" target="_blank"><i class="fab fa-facebook icons" id="facebook"></i></a>
-            <a href="https://x.com/ajala28981" target="_blank"><i class="fab fa-x icons" id="x"></i></a>
+    <div
+      id="monthly-summary"
+      style="
+        margin: 2em auto;
+        max-width: 700px;
+        background: #fff;
+        border-radius: 10px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.07);
+        padding: 20px 28px;
+      "
+    >
+      <h2 style="color: #2563eb">Monthly Summary</h2>
+      <div id="monthly-summary-content"></div>
+    </div>
+    <footer>
+      <p>
+        <a
+          href="https://david-godspower.github.io/david-portfolio/"
+          target="_blank"
+          style="
+            color: white;
+            cursor: pointer;
+            text-decoration: none;
+            font-size: 24px;
+          "
+          >David Godspower Ajala (D.G.A.) &copy <span id="year"></span
+        ></a>
+      </p>
+      <br />
+      <a
+        href="https://www.linkedin.com/in/david-godspower-ajala/"
+        target="_blank"
+        ><i class="fab fa-linkedin icons" id="linkedin"></i
+      ></a>
+      <a href="mailto:ajaladavid11@gmail.com" target="_blank"
+        ><i class="fas fa-envelope icons" id="gmail"></i
+      ></a>
+      <a
+        href="https://web.facebook.com/facebook.comDavidGodpowerAjalaDGA/"
+        target="_blank"
+        ><i class="fab fa-facebook icons" id="facebook"></i
+      ></a>
+      <a href="https://x.com/ajala28981" target="_blank"
+        ><i class="fab fa-x icons" id="x"></i
+      ></a>
     </footer>
     <script src="script.js"></script>
-</body>   
+  </body>
 </html>
