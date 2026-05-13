@@ -1,138 +1,205 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
+  <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BudgetFlow | Premium Financial Tracking</title>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <title>BudgetTracker | Premium Financial Tracking</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
     <link rel="stylesheet" href="styles.css" />
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
-</head>
-<body>
+  </head>
+  <body>
     <div id="loader" class="loader">
-        <div class="spinner"></div>
+      <div class="spinner"></div>
     </div>
 
     <!-- Fixed Header -->
     <header class="main-header">
-        <div class="brand">
-            <i class="fas fa-wallet"></i>
-            <span>BudgetFlow</span>
+      <div class="brand">
+        <i class="fas fa-wallet"></i>
+        <span>BudgetTracker</span>
+      </div>
+      <div class="header-actions">
+        <button id="export-pdf-btn" class="btn-icon" title="Export PDF">
+          <i class="fas fa-file-pdf"></i>
+        </button>
+        <button id="reset-btn" class="btn-icon delete" title="Reset All">
+          <i class="fas fa-trash-alt"></i>
+        </button>
+        <div class="theme-toggle">
+          <input type="checkbox" id="dark-mode-toggle" />
+          <label for="dark-mode-toggle"><i class="fas fa-moon"></i></label>
         </div>
-        <div class="header-actions">
-            <button id="export-pdf-btn" class="btn-icon" title="Export PDF"><i class="fas fa-file-pdf"></i></button>
-            <button id="reset-btn" class="btn-icon delete" title="Reset All"><i class="fas fa-trash-alt"></i></button>
-            <div class="theme-toggle">
-                <input type="checkbox" id="dark-mode-toggle" />
-                <label for="dark-mode-toggle"><i class="fas fa-moon"></i></label>
-            </div>
-        </div>
+      </div>
     </header>
 
     <main class="dashboard-wrapper">
-        <!-- Top Summary Cards -->
-        <div class="summary-grid">
-            <div class="card summary-card income">
-                <div class="icon-circle"><i class="fas fa-arrow-down"></i></div>
-                <div class="summary-info">
-                    <span class="label">Total Income</span>
-                    <h2 id="total-income">₦0.00</h2>
-                </div>
-            </div>
-            <div class="card summary-card expenses">
-                <div class="icon-circle"><i class="fas fa-arrow-up"></i></div>
-                <div class="summary-info">
-                    <span class="label">Total Expenses</span>
-                    <h2 id="total-expenses">₦0.00</h2>
-                </div>
-            </div>
-            <div class="card summary-card balance">
-                <div class="icon-circle"><i class="fas fa-scale-balanced"></i></div>
-                <div class="summary-info">
-                    <span class="label">Remaining Balance</span>
-                    <h2 id="total-balance">₦0.00</h2>
-                </div>
-            </div>
+      <!-- Top Summary Cards -->
+      <div class="summary-grid">
+        <div class="card summary-card income">
+          <div class="icon-circle"><i class="fas fa-arrow-down"></i></div>
+          <div class="summary-info">
+            <span class="label">Total Income</span>
+            <h2 id="total-income">₦0.00</h2>
+          </div>
         </div>
-
-        <div class="main-grid">
-            <!-- Form Side -->
-            <aside class="side-panel">
-                <div class="card form-card">
-                    <h3><i class="fas fa-plus-circle"></i> Quick Entry</h3>
-                    <div class="tabs">
-                        <button class="tab-btn active" data-target="income-form">Income</button>
-                        <button class="tab-btn" data-target="expense-form">Expense</button>
-                    </div>
-                    
-                    <form id="income-form" class="entry-form">
-                        <input type="text" id="income-source" placeholder="Income Source" required />
-                        <input type="number" id="income-amount" placeholder="Amount (₦)" step="0.01" required />
-                        <button type="submit" class="btn-submit">Add Income</button>
-                    </form>
-
-                    <form id="expense-form" class="entry-form hidden">
-                        <input type="text" id="expense-title" placeholder="Expense Title" required />
-                        <input type="number" id="expense-amount" placeholder="Amount (₦)" step="0.01" required />
-                        <select id="expense-category" class="premium-select"></select>
-                        <button type="submit" class="btn-submit">Add Expense</button>
-                    </form>
-                </div>
-
-                <div class="card analytics-card">
-                    <h3><i class="fas fa-chart-pie"></i> Category Split</h3>
-                    <canvas id="category-chart"></canvas>
-                </div>
-            </aside>
-
-            <!-- History Side -->
-            <section class="main-panel">
-                <div class="card table-card">
-                    <div class="table-header">
-                        <h3>Transaction History</h3>
-                        <div class="table-controls">
-                            <input type="text" id="search-bar" placeholder="Search transactions..." />
-                        </div>
-                    </div>
-                    <div class="table-responsive">
-                        <table>
-                            <thead>
-                                <tr><th>Type</th><th>Source/Title</th><th>Category</th><th>Amount</th><th>Date</th><th>Action</th></tr>
-                            </thead>
-                            <tbody id="transaction-history"></tbody>
-                        </table>
-                    </div>
-                </div>
-                
-                <div class="card chart-card">
-                    <h3><i class="fas fa-chart-line"></i> Financial Trends</h3>
-                    <canvas id="trend-chart"></canvas>
-                </div>
-            </section>
+        <div class="card summary-card expenses">
+          <div class="icon-circle"><i class="fas fa-arrow-up"></i></div>
+          <div class="summary-info">
+            <span class="label">Total Expenses</span>
+            <h2 id="total-expenses">₦0.00</h2>
+          </div>
         </div>
+        <div class="card summary-card balance">
+          <div class="icon-circle"><i class="fas fa-scale-balanced"></i></div>
+          <div class="summary-info">
+            <span class="label">Remaining Balance</span>
+            <h2 id="total-balance">₦0.00</h2>
+          </div>
+        </div>
+      </div>
+
+      <div class="main-grid">
+        <!-- Form Side -->
+        <aside class="side-panel">
+          <div class="card form-card">
+            <h3><i class="fas fa-plus-circle"></i> Quick Entry</h3>
+            <div class="tabs">
+              <button class="tab-btn active" data-target="income-form">
+                Income
+              </button>
+              <button class="tab-btn" data-target="expense-form">
+                Expense
+              </button>
+            </div>
+
+            <form id="income-form" class="entry-form">
+              <input
+                type="text"
+                id="income-source"
+                placeholder="Income Source"
+                required
+              />
+              <input
+                type="number"
+                id="income-amount"
+                placeholder="Amount (₦)"
+                step="0.01"
+                required
+              />
+              <button type="submit" class="btn-submit">Add Income</button>
+            </form>
+
+            <form id="expense-form" class="entry-form hidden">
+              <input
+                type="text"
+                id="expense-title"
+                placeholder="Expense Title"
+                required
+              />
+              <input
+                type="number"
+                id="expense-amount"
+                placeholder="Amount (₦)"
+                step="0.01"
+                required
+              />
+              <select id="expense-category" class="premium-select"></select>
+              <button type="submit" class="btn-submit">Add Expense</button>
+            </form>
+          </div>
+
+          <div class="card analytics-card">
+            <h3><i class="fas fa-chart-pie"></i> Category Split</h3>
+            <canvas id="category-chart"></canvas>
+          </div>
+        </aside>
+
+        <!-- History Side -->
+        <section class="main-panel">
+          <div class="card table-card">
+            <div class="table-header">
+              <h3>Transaction History</h3>
+              <div class="table-controls">
+                <input
+                  type="text"
+                  id="search-bar"
+                  placeholder="Search transactions..."
+                />
+              </div>
+            </div>
+            <div class="table-responsive">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Type</th>
+                    <th>Source/Title</th>
+                    <th>Category</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Action</th>
+                  </tr>
+                </thead>
+                <tbody id="transaction-history"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="card chart-card">
+            <h3><i class="fas fa-chart-line"></i> Financial Trends</h3>
+            <canvas id="trend-chart"></canvas>
+          </div>
+        </section>
+      </div>
     </main>
 
     <footer class="premium-footer">
-    <p>Managed by <strong><a href="https://davidgodspowerajala.me" target="_blank"> David Godspower Ajala</a></strong> <span id="current-year"></span></p>
-    <div class="social-links">
-        <a href="https://www.linkedin.com/in/david-godspower-ajala/" target="_blank" aria-label="LinkedIn">
-            <i class="fab fa-linkedin"></i>
+      <p>
+        Managed by
+        <strong
+          ><a href="https://davidgodspowerajala.me" target="_blank">
+            David Godspower Ajala</a
+          ></strong
+        >
+        <span id="current-year"></span>
+      </p>
+      <div class="social-links">
+        <a
+          href="https://www.linkedin.com/in/david-godspower-ajala/"
+          target="_blank"
+          aria-label="LinkedIn"
+        >
+          <i class="fab fa-linkedin"></i>
         </a>
         <a href="mailto:ajaladavid11@gmail.com" aria-label="Email">
-            <i class="fas fa-envelope"></i>
+          <i class="fas fa-envelope"></i>
         </a>
-        <a href="https://web.facebook.com/facebook.comDavidGodpowerAjalaDGA/" target="_blank" aria-label="Facebook">
-            <i class="fab fa-facebook"></i>
+        <a
+          href="https://web.facebook.com/facebook.comDavidGodpowerAjalaDGA/"
+          target="_blank"
+          aria-label="Facebook"
+        >
+          <i class="fab fa-facebook"></i>
         </a>
-        <a href="https://x.com/ajala28981" target="_blank" aria-label="X (Twitter)">
-            <i class="fab fa-x"></i>
+        <a
+          href="https://x.com/ajala28981"
+          target="_blank"
+          aria-label="X (Twitter)"
+        >
+          <i class="fab fa-x"></i>
         </a>
-    </div>
-</footer>
+      </div>
+    </footer>
 
     <script src="script.js"></script>
-</body>
+  </body>
 </html>
