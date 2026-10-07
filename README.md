@@ -1,69 +1,159 @@
-# 💰 BudgetFlow | Premium Financial Dashboard
+# 💰 BudgetTracker
 
-A high-performance, **fintech-inspired web application** designed for elegant personal finance management. BudgetFlow provides a classic, desktop-grade experience for tracking incomes and expenses with real-time data visualization—all while maintaining absolute data privacy.
+BudgetTracker is a client-side personal finance dashboard for recording income and expenses, monitoring a running balance, reviewing transaction history, and visualizing financial activity.
 
-👉 **Live Demo:** [david-godspower.github.io/budget-tracker](https://david-godspower.github.io/budget-tracker)
+The application is designed for local use: transaction data and theme preferences are stored in the browser, and no backend or account is required.
 
----
+## ✨ Features
 
-## ✨ Premium Features
+- **Income tracking:** Record an income source and amount in Nigerian naira.
+- **Expense tracking:** Record an expense title, amount, and category.
+- **Summary cards:** View total income, total expenses, and remaining balance.
+- **Unified transaction history:** See income and expense entries together, sorted by date.
+- **Search:** Filter transactions by source, title, or expense category.
+- **Category breakdown:** View expense distribution in a doughnut chart.
+- **Monthly trends:** Compare income and expenses over time with a line chart.
+- **PDF export:** Generate a formatted financial statement with summary totals and transaction details.
+- **Dark mode:** Switch between light and dark themes with the preference saved locally.
+- **Delete transactions:** Remove individual entries after confirmation.
+- **Reset data:** Clear the dashboard's stored data and reload the application.
+- **Responsive dashboard:** Use the interface across desktop and mobile screen sizes.
 
-- **Unified Transaction Stream**: A single, chronological feed for all financial activity with dynamic color-coded badges and status icons.
-- **Bento-Box Dashboard**: A modern, structured UI layout providing a clear hierarchy of financial KPIs (Income, Expenses, and Net Balance).
-- **Intelligent Data Visualization**:
-    *   📈 **Line Charts**: Real-time financial trend analysis comparing cash flow over time.
-    *   🍩 **Doughnut Charts**: Visual category breakdown to identify spending habits at a glance.
-- **Professional PDF Reporting**: Engineering-grade financial statements featuring formatted tables, right-aligned currency, and a developer signature.
-- **Smart Filtering & Search**: Instant keyword search and date-range filtering with smooth auto-scroll to results for optimized UX.
-- **Persistent Personalization**: Seamless Dark Mode integration and local data persistence via the browser's `localStorage` API.
-- **Responsive Architecture**: Fully optimized for mobile and desktop environments, maintaining the "Premium" feel across all screen sizes.
+## 🛠️ Built with
 
----
+- **HTML5** for the dashboard structure and forms
+- **CSS3** for the responsive layout, cards, themes, and visual styling
+- **Vanilla JavaScript (ES6+)** for state management, calculations, rendering, searching, and local storage
+- **Chart.js** for line and doughnut charts
+- **jsPDF** for PDF generation
+- **jsPDF-AutoTable** for formatted transaction tables in exported statements
+- **Font Awesome** for interface icons
+- **Plus Jakarta Sans** for dashboard typography
 
-## 🔒 Security & Privacy
+## 🚀 Getting started
 
-- **100% Client-Side**: This application runs entirely in your browser. No financial data is ever transmitted to an external server.
-- **Zero-Footprint Storage**: Your data is saved locally on your device's storage. You are in total control of your financial history.
-- **Open Source**: Built with transparency under the [MIT License](LICENSE).
+### Prerequisites
 
----
+You only need a modern web browser. No build tools, package manager, backend, or database is required.
 
-## 🛠 Tech Stack
+### Run locally
 
-| Technology | Purpose |
-| :--- | :--- |
-| **HTML5** | Semantic structure for professional web standards. |
-| **CSS3** | Premium styling utilizing **Glassmorphism**, **Flexbox**, and Custom CSS Variables. |
-| **Vanilla JS (ES6+)** | Core engine for state management, asynchronous logic, and DOM manipulation. |
-| **Chart.js** | Powering interactive and high-performance financial data visualizations. |
-| **jsPDF & AutoTable** | Orchestrating the generation of structured, multi-page financial documents. |
+1. **Clone the repository**
 
----
-
-## 🚀 Getting Started
-
-1. **Clone the repository**:
    ```bash
-   git clone [https://github.com/david-godspower/budget-tracker.git](https://github.com/david-godspower/budget-tracker.git)
+   git clone https://github.com/david-godspower/budget-tracker.git
    ```
-### Launch the App
-Simply open `index.html` in any modern web browser. No installation or server configuration is required.
 
----
+2. **Open the project directory**
 
-## 👨‍💻 About the Developer
+   ```bash
+   cd budget-tracker
+   ```
 
-**David Godspower Ajala (D.G.A.)**  
-*Software Developer | Computer Engineering Intern at Oyo State Management Information Centre*
+3. **Launch the dashboard**
 
-I am passionate about building intuitive tools that combine clean code with high-end design. This project is a reflection of my commitment to technical excellence and user-centric engineering.
+   Open `index.html` directly in a browser, or use the **Live Server** extension in VS Code.
 
-### 📩 Connect with Me:
-* **Email:** [ajaladavid11@gmail.com](mailto:ajaladavid11@gmail.com)
-* **LinkedIn:** [David Godspower Ajala](https://www.linkedin.com/in/david-godspower-ajala)
-* **X/Twitter:** [David Ajala](https://x.com/ajala28981)
+   A local server is recommended because Chart.js, jsPDF, AutoTable, Font Awesome, and the Google Font are loaded from CDNs.
 
----
+## 🎯 How to use
 
-## 📜 License
-Distributed under the **MIT License**. See the `LICENSE` file for more information.
+### Add income
+
+1. Keep the **Income** tab selected.
+2. Enter an income source.
+3. Enter the amount in naira.
+4. Select **Add Income**.
+
+### Add an expense
+
+1. Select the **Expense** tab.
+2. Enter an expense title and amount.
+3. Choose a category.
+4. Select **Add Expense**.
+
+### Review and manage data
+
+- Use the search field to filter the transaction history.
+- Use the trash icon beside a transaction to delete it.
+- Use the moon icon to toggle dark mode.
+- Use the PDF icon to export a financial statement.
+- Use **Reset All** to clear stored income, expense, and theme data.
+
+## 📊 Default expense categories
+
+New expenses can be assigned to:
+
+- Transport
+- Food
+- Data
+- Books
+- Tithe
+- Groceries
+- Savings
+- Rent
+- Entertainment
+- Others
+
+## 💾 Data storage
+
+The app stores data in browser `localStorage`:
+
+| Key | Contents |
+|---|---|
+| `incomes` | Saved income entries |
+| `expenses` | Saved expense entries |
+| `darkMode` | Whether dark mode is enabled |
+
+The dashboard uses Nigerian naira (`NGN`) formatting. Data remains on the current browser and device; it is not synchronized to an account or server.
+
+## 📄 PDF reports
+
+The **Export PDF** control creates a `BudgetTracker_Statement_<year>.pdf` report containing:
+
+- Total income
+- Total expenses
+- Net balance
+- A dated transaction table
+- Income and expense descriptions
+- Expense categories
+
+## 📁 Project structure
+
+```text
+budget-tracker/
+├── index.html      # Dashboard markup, forms, charts, and controls
+├── script.js       # State management, calculations, rendering, and exports
+├── styles.css      # Dashboard layout, themes, and responsive styling
+├── PayButton.js    # Standalone Paystack payment component draft
+├── LICENSE         # MIT license
+└── README.md       # Project documentation
+```
+
+`PayButton.js` is a React/Paystack component and is not imported by the current static HTML dashboard. It should be configured and integrated separately before use, and payment credentials should never be exposed in production frontend code.
+
+## 🔒 Privacy and security
+
+- Financial entries are stored locally in the browser.
+- The current dashboard does not send transaction data to an application server.
+- Clearing browser storage or selecting **Reset All** removes the saved dashboard data.
+- External CDN resources require an internet connection.
+- This application is not a substitute for professional financial advice.
+
+## 🌐 Live demo
+
+[**Open BudgetTracker**](https://david-godspower.github.io/budget-tracker)
+
+## 👤 Author
+
+**David Godspower Ajala**
+
+- [Portfolio](https://davidgodspowerajala.me)
+- [LinkedIn](https://www.linkedin.com/in/david-godspower-ajala/)
+- [Facebook](https://facebook.com/DavidGodspowerAjalaDGA/)
+- [Twitter/X](https://x.com/DavidGAjala)
+- [Email](mailto:ajaladavid11@gmail.com)
+
+## 📄 License
+
+This project is available under the [MIT License](LICENSE).
